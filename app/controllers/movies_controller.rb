@@ -19,6 +19,7 @@ class MoviesController < ApplicationController
       @ratings = params[:ratings]
       @movies = Movie.all(:conditions=>ratingsearch,:order=>params[:sort])
     else
+      @ratings = {}
       @movies = Movie.all(:order=>params[:sort])
     end
   end
