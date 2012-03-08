@@ -1,5 +1,11 @@
 class MoviesController < ApplicationController
 
+  before_filter :load_vars
+
+  def load_vars
+    Rating.all().each {|rating| (@all_ratings ||= []) << rating.rating}
+  end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
@@ -8,7 +14,13 @@ class MoviesController < ApplicationController
 
   def index
     @highlight = params[:sort]
-    @movies = Movie.all(:order=>params[:sort])
+    if params[:ratings]
+      ratingsearch = {:rating => params[:ratings].keys}
+      @ratings = params[:ratings]
+      @movies = Movie.all(:conditions=>ratingsearch,:order=>params[:sort])
+    else
+      @movies = Movie.all(:order=>params[:sort])
+    end
   end
 
   def new
