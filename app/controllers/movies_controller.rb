@@ -15,6 +15,15 @@ class MoviesController < ApplicationController
   def index
     @highlight = params[:sort]
     if params[:ratings]
+      session[:ratings] = params[:ratings]
+    end
+    if params[:sort]
+      session[:sort] = params[:sort]
+    end
+    
+    if params[:sort] != session[:sort] or params[:ratings] != session[:ratings]
+      redirect_to movies_path(:sort=>session[:sort], :ratings=>session[:ratings])
+    elsif params[:ratings]
       ratingsearch = {:rating => params[:ratings].keys}
       @ratings = params[:ratings]
       @movies = Movie.all(:conditions=>ratingsearch,:order=>params[:sort])
